@@ -1,8 +1,8 @@
 # CV-Lab
 
 Hands-on notebooks for the four Image Processing assignments in the parent folder, plus a
-YOLO starter. Every task is a stub you fill in, with a grader that tells you which property
-you broke.
+YOLO starter. Every task is a stub you fill in, followed by a list of properties you write
+your own tests for. No helper module, no hidden graders: every line that runs is one you can read.
 
 ---
 
@@ -132,14 +132,18 @@ rm -rf ~/cv && /Library/Frameworks/Python.framework/Versions/3.12/bin/python3 -m
 
 ```
 CV-Lab/
-├── cvlab.py      load / show / hist / info helpers + all check_* graders
 ├── images/       10 standard OpenCV sample images
 ├── 00_setup_and_device_check.ipynb
 ├── 01_binary_thresholding.ipynb     <- Assignment 1
 ├── 02_rgb_to_grayscale.ipynb        <- Assignment 2
 ├── 03_border_and_complement.ipynb   <- Assignment 3
 ├── 04_intensity_transforms.ipynb    <- Assignment 4
-└── 05_yolo_first_detection.ipynb    <- bonus: detection, IoU, NMS
+├── 05_yolo_first_detection.ipynb    <- bonus: detection, IoU, NMS
+├── 06_image_fundamentals.ipynb
+├── 07_color_models.ipynb
+├── 08_spatial_filtering.ipynb
+├── 09_histogram_processing.ipynb
+└── webcam_yolo.py                   <- real-time YOLO from the webcam
 ```
 
 | notebook | assignment text | core idea |
@@ -155,7 +159,7 @@ CV-Lab/
 ## 4. How to use these
 
 Each assignment notebook goes: concept → a **worked** cell that already runs → your stub →
-grader → **the real OpenCV call** → visualisation → questions → stretch goals.
+**your tests** → **the real OpenCV call** → visualisation → questions → stretch goals.
 
 ### Naming convention: strip `my_` and you have the OpenCV name
 
@@ -181,7 +185,7 @@ Every stub you implement is named after the OpenCV function that does the same j
 | `my_equalizeHist` | `cv2.equalizeHist` |
 | `my_NMSBoxes`, `my_iou` | `cv2.dnn.NMSBoxes`, `torchvision.ops.box_iou` |
 
-Right after each grader there is an **"the real OpenCV call"** cell that runs the genuine
+Right after your tests there is an **"the real OpenCV call"** cell that runs the genuine
 function and `assert`s it agrees with yours — so you see the exact signature, the argument
 order, and the traps (`cv2.threshold` returns a *tuple*; `dsize` is `(width, height)`;
 `filter2D` does correlation not convolution; HSV hue is 0–179). Every notebook ends with an
@@ -191,19 +195,17 @@ order, and the traps (`cv2.threshold` returns a *tuple*; `dsize` is `(width, hei
    plotting, dtype demos). Read the output, predict it before you run where the text asks you to.
 2. **Fill in the `# TODO` stub.** Each one raises `NotImplementedError` until you do. The
    docstring is the complete spec — shape, dtype, rounding, edge cases.
-3. **Run the `check_*` cell.** It prints one PASS/FAIL line per property, and the FAIL lines
-   carry the hint. `check_gray_mean` telling you *"output brighter than the brightest channel →
-   uint8 overflowed, average in float"* is more useful than the answer would be.
+3. **Write the tests.** Under each stub is a list of properties the correct function must have.
+   Turn each one into an `assert` with a message that says what broke. Build tiny inputs by hand
+   where you know the exact answer, cover the edge cases, then compare against OpenCV on a real
+   photo. When a test fails, working out *why* is the lesson.
 4. **Only then open the "Nudge" toggle.** They describe the approach, not the code.
 5. **Do the "Think about it" questions.** These are the viva questions. Write the answers in the
    notebook — they're what turns "I got it to pass" into "I understand it".
 
-The graders test *properties* — shapes, dtypes, endpoints, monotonicity, invariants like
-`complement(complement(x)) == x`, and agreement with the equivalent OpenCV call. Reading
-`cvlab.py` will not hand you a solution, so read it freely; it's decent numpy to learn from.
-
-All 11 grader suites were verified against known-correct solutions, and notebooks 00–04 were
-executed end-to-end with those solutions in place, so if a check fails it's your code, not the test.
+The properties to test are things like shapes, dtypes, endpoints, monotonicity, invariants
+such as `complement(complement(x)) == x`, and agreement with the equivalent OpenCV call. If a
+test fails, the bug can be in your function *or* in your test. Telling which is a real skill.
 
 ---
 
